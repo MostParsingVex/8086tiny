@@ -19,6 +19,13 @@ volatile uint8_t* REU_CONTROL=(void*)0xdf0a;
 
 volatile uint8_t* VIC_2MHZ=(void*)0xd030;
 
+volatile uint8_t* CIA1_TOD = (void*)0xdc08;
+volatile uint8_t* CIA1_TOD_0 = (void*)0xdc08;
+volatile uint8_t* CIA1_TOD_1 = (void*)0xdc09;
+volatile uint8_t* CIA1_TOD_2 = (void*)0xdc0a;
+volatile uint8_t* CIA1_TOD_3 = (void*)0xdc0b;
+volatile uint8_t* CIA2_TOD = (void*)0xdd08;
+
 #include<cbm.h>
 #include<stdio.h>
 
@@ -183,7 +190,18 @@ uint8_t read_bios_table_lookup( uint8_t i, uint8_t j ) {
   return read_regs8( read_regs16( 0x81 + i ) + j );
 }
 
-void getrtc(){}
+void getrtc(){
+  volatile uint8_t temp;
+  temp = *CIA1_TOD_3;
+  temp = (temp & 0xf) + (temp & 0x10)/8*5 + (temp & 0x80)/32*3;
+  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 8, temp );
+  temp = *CIA1_TOD_2;
+  temp = (temp & 0xf) + (temp & 0xf0)/8*5;
+  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 4, temp );
+  temp = *CIA1_TOD_1;
+  temp = (temp & 0xf) + (temp & 0xf0)/8*5;
+  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX), temp );
+  write_ram16(16L * read_regs16(REG_ES) + (unsigned short)( 36+ read_regs16( REG_BX)), *CIA1_TOD_0 * 100 );}
 
 void cbm_k_chrout_wrapper( uint8_t input ) {
   if( isalpha( input ) ) {
@@ -213,6 +231,24 @@ int write_console( uint8_t *buffer ) {
 void ram_init(){
 #ifdef C128
   *VIC_2MHZ = 1;
+#endif
+
+  *CIA1_TOD_0 = 0;
+  volatile uint8_t temp;
+  temp = *CIA1_TOD_3;
+  temp = (temp & 0xf) + (temp & 0x10)/8*5 + (temp & 0x80)/32*3;
+  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 8, temp );
+  temp = *CIA1_TOD_2;
+  temp = (temp & 0xf) + (temp & 0xf0)/8*5;
+  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 4, temp );
+  temp = *CIA1_TOD_1;
+  temp = (temp & 0xf) + (temp & 0xf0)/8*5;
+  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX), temp );
+  write_ram16(16L * read_regs16(REG_ES) + (unsigned short)( 36+ read_regs16( REG_BX)), *CIA1_TOD_0 * 100 );
+#if 0
+for(int i = 0;i<40;i++)
+printf("%02x ", read_ram8( 16 * read_regs16(REG_ES) + (unsigned short)( read_regs16( REG_BX)) + i));
+puts("");
 #endif
 }
 
