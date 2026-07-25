@@ -5,8 +5,8 @@ int main(){
   ram_init();
 
   puts("clear ram");
-  for( uint32_t i = 0; i < 0x120000L; i++ ) {
-    write_ram8( i, 0 );
+  for( uint32_t i = 0; i < 0x120000L; i+=2 ) {
+    write_ram16( i, 0 );
   }
 
   puts("loading bios");
@@ -21,7 +21,7 @@ int main(){
   puts("loading fd.img");
   fp = fopen( "fd.img", "rb" );
   for( uint32_t i = 0; i < 1474560; i++ ) {
-    if( (i & 0x3ff) == 0 ) printf( "%ld\n", (long)i );
+    if( (i & 0x7ff) == 0 ) printf( "%ld\n", (long)i );
     fread( &val, 1, 1, fp );
     write_disk( 0, i, val );
   }

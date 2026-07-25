@@ -3,6 +3,8 @@
 
 ![Screenshot of C128 booting FreeDOS](images/vice-screen-2026071221383138.png)
 
+[![C/C++ CI](https://github.com/MostParsingVex/8086tiny-c128/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/MostParsingVex/8086tiny-c128/actions/workflows/c-cpp.yml)
+
 8086tiny-c128 is a port of [Adrian Cable's 8086tiny](https://github.com/adriancable/8086tiny) to the Commodore 128. This is currently a work in progress and
 my code changes are still a disgusting mess.
 While the current version should work on native hardware, it is currently most useful in an emulator
@@ -45,7 +47,6 @@ Currently there are several Makefiles to target several platforms
 * To build for a Commodore 64 with 4 MB geoRAM cartridge, type `make -f Makefile.c64georam`
 * To build for a Commodore 128 with 4 MB REU, type `make -f Makefile.c128`
 * To build for a Commodore 128 with a SuperCPU128 and 4 MB of SuperCPU RAM, type `make -f Makefile.scpu128`
-* To build for a Commodore 128 with 4 MB geoRAM cartridge, type `make -f Makefile.c128georam`
 
 ### To run
 

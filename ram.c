@@ -6,7 +6,6 @@
 #include <sys/uio.h>
 #include <unistd.h>
 #include <time.h>
-#include <sys/timeb.h>
 #include"8086tiny.h"
 
 #define RAM_SIZE 0x10FFF0L
@@ -14,8 +13,7 @@
 #define REGS_BASE 0xF0000L
 
 time_t clock_buf;
-struct timeb ms_clock;
-//extern FILE*logfd;
+struct timespec tp;
 
 #if 0
 uint8_t mem[ RAM_SIZE ];
@@ -109,16 +107,22 @@ int write_disk( int whichdisk, uint32_t addr, uint8_t val ) {
 }
 
 void getrtc(){
-#if 0
+#if 1
   time(&clock_buf);
-  ftime(&ms_clock);
+  clock_gettime( CLOCK_REALTIME, &tp );
   {
     char* tmptr = (char*)localtime(&clock_buf);
     for( int i = 0; i < sizeof(struct tm); i++ ) {
       write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + i, tmptr[ i ] );
     }
   }
-  write_ram16(16 * read_regs16(REG_ES) + (unsigned short)( 36+ read_regs16( REG_BX)), ms_clock.millitm );
+  write_ram16(16 * read_regs16(REG_ES) + (unsigned short)( 36+ read_regs16( REG_BX)), tp.tv_nsec / 1000000 );
+#if 0
+for(int i = 0;i<40;i++)
+printf("%02x ", read_ram8( 16 * read_regs16(REG_ES) + (unsigned short)( read_regs16( REG_BX)) + i));
+puts("");
+exit(0);
+#endif
 #endif
 }
 
