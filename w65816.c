@@ -35,7 +35,7 @@ uint16_t read_ram16( uint32_t addr ) {
 }
 
 // write to 0xffff will have incorrect high byte,
-// but that appears to be consistent with tht the 80186 does
+// but that appears to be consistent with what the 80186 does
 void write_ram16( uint32_t addr, uint16_t val ) {
   write_ram8( addr, val );
   write_ram8( addr + 1, val >> 8 );
@@ -78,11 +78,7 @@ uint8_t read_bios_table_lookup( uint8_t i, uint8_t j ) {
   return read_regs8( read_regs16( 0x81 + i ) + j );
 }   
 
-/* FIXME: delete this temporary hack after we figure out how to keep time */
-uint8_t tod_hack[4];
-
 void getrtc(){
-#if 1
   volatile uint8_t temp;
   temp = *CIA1_TOD_3;
   temp = (temp & 0xf) + (temp & 0x10)/8*5 + (temp & 0x80)/32*3;
@@ -94,28 +90,6 @@ void getrtc(){
   temp = (temp & 0xf) + (temp & 0xf0)/8*5;
   write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX), temp );
   write_ram16(16L * read_regs16(REG_ES) + (unsigned short)( 36+ read_regs16( REG_BX)), *CIA1_TOD_0 * 100 );
-#else
-  write_ram16(16L * read_regs16(REG_ES) + (unsigned short)( 36+ read_regs16( REG_BX)), (uint16_t)tod_hack[0] * 100 );
-  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX), tod_hack[1]);
-  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 4, tod_hack[2]);
-  write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 8, tod_hack[3]);
-  tod_hack[0]++;
-  if( tod_hack[0] >= 10 || 1 ) {
-    tod_hack[0] = 0;
-    tod_hack[1]++;
-    if( tod_hack[1] >= 60 ) {
-      tod_hack[1] = 0;
-      tod_hack[2]++;
-      if( tod_hack[2] >= 60 ) {
-        tod_hack[2] = 0;
-        tod_hack[3]++;
-        if( tod_hack[3] >= 24 ) {
-          tod_hack[3] = 0;
-        }
-      }
-    }
-  }
-#endif
 }
 
 void cbm_k_chrout_wrapper( uint8_t input ) {
@@ -125,8 +99,16 @@ void cbm_k_chrout_wrapper( uint8_t input ) {
   cbm_k_chrout( input );
 }
 
+uint8_t cbm_k_chrin_wrapper( ) {
+  uint8_t input = cbm_k_getin( );
+  if( isalpha( input ) ) {
+    input ^= 32;
+  }
+  return input;
+}
+
 int read_console( uint8_t *buffer ) {
-  uint8_t temp = cbm_k_getin();
+  uint8_t temp = cbm_k_chrin_wrapper();
   if( temp ) {
     *buffer = temp;
     return 1;
@@ -187,9 +169,11 @@ void ram_init(){
   write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 24, 6);
   write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 28, 0);
   write_ram8( 16L*read_regs16(REG_ES) + read_regs16(REG_BX) + 32, 0);
+#if 0
 for(int i = 0;i<40;i++) 
 printf("%02x ", read_ram8( 16 * read_regs16(REG_ES) + (unsigned short)( read_regs16( REG_BX)) + i));
 puts("");
+#endif
 }
 
 uint8_t read_disk( int whichdisk, uint32_t addr ) {

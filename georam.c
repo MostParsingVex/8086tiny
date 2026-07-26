@@ -61,7 +61,7 @@ uint16_t read_ram16( uint32_t addr ) {
 }
 
 // write to 0xffff will have incorrect high byte,
-// but that appears to be consistent with tht the 80186 does
+// but that appears to be consistent with what the 80186 does
 void write_ram16( uint32_t addr, uint16_t val ) {
 #ifdef C128
   *VIC_2MHZ = 252;
@@ -137,8 +137,16 @@ void cbm_k_chrout_wrapper( uint8_t input ) {
   cbm_k_chrout( input );
 }
 
+uint8_t cbm_k_chrin_wrapper( ) {
+  uint8_t input = cbm_k_getin( );
+  if( isalpha( input ) ) {
+    input ^= 32;
+  }
+  return input;
+}
+
 int read_console( uint8_t *buffer ) {
-  uint8_t temp = cbm_k_getin();
+  uint8_t temp = cbm_k_chrin_wrapper( );
   if( temp ) {
     *buffer = temp;
     return 1;

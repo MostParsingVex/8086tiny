@@ -3,6 +3,8 @@
 
 ![Screenshot of C128 booting FreeDOS](images/vice-screen-2026071221383138.png)
 
+![Screenshot of C128 booting ELKS Linux](images/vice-screen-2026080300534600.png)
+
 [![C/C++ CI](https://github.com/MostParsingVex/8086tiny-c128/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/MostParsingVex/8086tiny-c128/actions/workflows/c-cpp.yml)
 
 8086tiny-c128 is a port of [Adrian Cable's 8086tiny](https://github.com/adriancable/8086tiny) to the Commodore 128. This is currently a work in progress and
@@ -23,6 +25,7 @@ If your business needs (!!) require a faster x86 emulation solution on your
 
 ### Things that work
 * FreeDOS from 2012 boots
+* Linux ELKS 0.9.1 boots and runs. The contents of the screen may be filled with VT100 escape sequences and may be difficult to interpret.
 * Simple command line applications that only use text mode and don't make too many crazy demands on
 cursor positioning should be usable.
 
