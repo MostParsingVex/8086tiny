@@ -27,9 +27,5 @@ int main(){
   }
 #endif
 
-#ifdef C128
-  asm("jmp $ff3d");
-#else
-  asm("jmp $fce2");
-#endif
+  asm("jmp ($fffc)");
 }

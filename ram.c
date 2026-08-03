@@ -38,7 +38,7 @@ uint16_t read_ram16( uint32_t addr ) {
 }
 
 // write to 0xffff will have incorrect high byte,
-// but that appears to be consistent with tht the 80186 does
+// but that appears to be consistent with what the 80186 does
 void write_ram16( uint32_t addr, uint16_t val ) {
   //*(uint16_t*)(mem + addr) = val;
   write_ram8( addr, val );
@@ -97,12 +97,11 @@ uint8_t *diska, *diskc;
 #endif
 
 uint8_t read_disk( int whichdisk, uint32_t addr ) {
-//printf("whichdisk %d addr %08x\n",whichdisk, addr);
-  return *((whichdisk&0 ? diskc : diska) + addr);
+  return *((whichdisk ? diska : diskc) + addr);
 }
 
 int write_disk( int whichdisk, uint32_t addr, uint8_t val ) {
-  *((whichdisk&0 ? diskc : diska) + addr) = val;
+  *((whichdisk ? diska : diskc) + addr) = val;
   return 0;
 }
 
@@ -152,7 +151,7 @@ void ram_init() {
   for( int32_t i = 0; i < 1 << 21; i++ ) {
     uint8_t temp;
     read( fd, &temp, 1 );
-    write_disk( 0, i, temp );
+    write_disk( 1, i, temp );
   }
   close(fd);
 }

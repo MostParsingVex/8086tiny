@@ -8,7 +8,7 @@
 # no_graphics compiles without SDL graphics/sound
 
 #OPTS_ALL=-O3 -fsigned-char -std=c99
-OPTS_ALL=-g -std=c99 -Wall -std=gnu99
+OPTS_ALL=-g -std=gnu99 -Wall
 #OPTS_ALL=-g -Oz -std=c99
 OPTS_SDL=`sdl-config --cflags --libs`
 OPTS_NOGFX=-DNO_GRAPHICS
