@@ -692,7 +692,7 @@ if(inst_counter==973875){
                                 reg_ip += i_d && i_w ? (int8_t)i_data0 : i_data0
 			;break; case 15: // TEST reg, r/m
 				//(i_w ? op_dest = *(unsigned short*)&mem[op_from_addr], op_result = *(unsigned short*)&mem[op_from_addr]  & (op_source = *(unsigned short*)&mem[ op_to_addr]) : (op_dest = mem[op_from_addr], op_result = mem[op_from_addr]  & (op_source = *(unsigned char*)&mem[ op_to_addr])))
-                                (i_w ? op_dest = read_ram16(op_from_addr), op_result = op_dest & (op_source = read_ram16( op_to_addr )) : (op_dest = read_ram8(op_from_addr), op_result = op_dest & (op_source = read_ram8( op_from_addr ))))
+                                (i_w ? op_dest = read_ram16(op_from_addr), op_result = op_dest & (op_source = read_ram16( op_to_addr )) : (op_dest = read_ram8(op_from_addr), op_result = op_dest & (op_source = read_ram8( op_to_addr ))))
 			;break; case 16: // XCHG AX, regs16
 				i_w = 1;
 				op_to_addr = REGS_BASE;

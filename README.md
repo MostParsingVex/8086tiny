@@ -24,7 +24,7 @@ If your business needs (!!) require a faster x86 emulation solution on your
 * llvm-mos SDK v22.5.0 or higher
 
 ### Things that work
-* FreeDOS from 2012 boots
+* FreeDOS from 2012 boots and runs.
 * Linux ELKS 0.9.1 boots and runs. The contents of the screen may be filled with VT100 escape sequences and may be difficult to interpret.
 * Simple command line applications that only use text mode and don't make too many crazy demands on
 cursor positioning should be usable.
